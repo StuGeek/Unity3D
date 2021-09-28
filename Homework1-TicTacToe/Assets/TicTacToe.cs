@@ -157,7 +157,7 @@ public class TicTacToe : MonoBehaviour {
         resetStyle.fontSize = 20;
         // 按下重置按钮，游戏被初始化
         if (GUI.Button(new Rect(firstButtonX + 3 * buttonWidth + 50, Screen.height - 70, 80, 50), "Reset", resetStyle)) {
-            InitGameWithTotalPlayer(0);
+            InitGameWithTotalPlayer(totalPlayer);
         }
     }
 
