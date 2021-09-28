@@ -229,9 +229,9 @@ public class TicTacToe : MonoBehaviour {
                 return "O";
             // 如果这个棋格中为PLAYER2
             case PLAYER2:
+                // 棋格中显示内容为X
                 return "X";
             default:
-                // 棋格中显示内容为X
                 return "";
         }
     }
