@@ -26,12 +26,14 @@ public class TicTacToe : MonoBehaviour {
     public Texture2D backgroundImage;  // 游戏背景图片
     public GUISkin gameSkin;  // 游戏控件的皮肤风格
 
-    /* 初始化游戏 */
-    void InitGame() {
+    /* 用游戏的玩家数初始化游戏 */
+    void InitGameWithTotalPlayer(int playersNum) {
         // 游戏回合从Player1开始
         gameTurn = PLAYER1;
         // 总进行回合数设为0
         totalMoves = 0;
+        // 设置游戏的玩家数
+        totalPlayer = playersNum;
         // 棋盘的每一格都还没被玩家占据
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
@@ -57,7 +59,7 @@ public class TicTacToe : MonoBehaviour {
         chessBoard[yIndex, xIndex] = gameTurn;
         gameTurn = (gameTurn == PLAYER1 ? PLAYER2 : PLAYER1);
         totalMoves++;
-        SetGameButton(xIndex, yIndex);
+        GetGameButtonText(xIndex, yIndex);
     }
 
     /* 检查是否有赢家 */
@@ -115,7 +117,10 @@ public class TicTacToe : MonoBehaviour {
     void AddTip() {
         // 选择Label的皮肤风格
         GUI.skin = gameSkin;
-        SetTip();
+        // 根据是否有赢家获得提示框中的内容
+        string text = GetTipText();
+        // 绘制出提示框
+        GUI.Label(new Rect(Screen.width / 2 - 320, 70, 650, 50), text);
     }
 
     /* 添加按钮实现的井字棋格和功能按钮 */
@@ -135,7 +140,13 @@ public class TicTacToe : MonoBehaviour {
         // 按照坐标从左往右，从上往下设置棋格按钮的样式和功能
         for (int xIndex = 0; xIndex < 3; ++xIndex) {
             for (int yIndex = 0; yIndex < 3; ++yIndex) {
-                SetGameButton(xIndex, yIndex);
+                // 按照横纵坐标找到棋格相应的位置
+                int buttonX = firstButtonX + xIndex * buttonWidth;
+                int buttonY = firstButtonY + yIndex * buttonHeight;
+                string text = GetGameButtonText(xIndex, yIndex);
+                if (GUI.Button(new Rect(buttonX, buttonY, buttonWidth, buttonHeight), text)) {
+                    SetGameButtonFunction(xIndex, yIndex);
+                }
             }
         }
     }
@@ -146,7 +157,7 @@ public class TicTacToe : MonoBehaviour {
         resetStyle.fontSize = 20;
         // 按下重置按钮，游戏被初始化
         if (GUI.Button(new Rect(firstButtonX + 3 * buttonWidth + 50, Screen.height - 70, 80, 50), "Reset", resetStyle)) {
-            InitGame();
+            InitGameWithTotalPlayer(0);
         }
     }
 
@@ -156,18 +167,16 @@ public class TicTacToe : MonoBehaviour {
         resetStyle.fontSize = 20;
         // 按下单人游戏模式按钮，游戏被初始化，游戏玩家人数变为1
         if (GUI.Button(new Rect(firstButtonX - 200, Screen.height - 2 * buttonHeight - 40, 180, 50), "1 Player Mode", resetStyle)) {
-            InitGame();
-            totalPlayer = 1;
+            InitGameWithTotalPlayer(1);
         }
         // 按下双人游戏模式按钮，游戏被初始化，游戏玩家人数变为2
         if (GUI.Button(new Rect(firstButtonX - 200, Screen.height - buttonHeight - 40, 180, 50), "2 Players Mode", resetStyle)) {
-            InitGame();
-            totalPlayer = 2;
+            InitGameWithTotalPlayer(2);
         }
     }
 
-    /* 根据是否有赢家设置提示框中的内容 */
-    void SetTip() {
+    /* 根据是否有赢家获得提示框中的内容 */
+    string GetTipText() {
         // 检查是否有赢家
         int winner = CheckWinner();
         switch (winner) {
@@ -175,35 +184,35 @@ public class TicTacToe : MonoBehaviour {
             case NOPLAYER:
                 // 如果总玩家数为0，即还未选择游戏模式，那么提示选择游戏模式
                 if (totalPlayer == 0) {
-                    GUI.Label(new Rect(Screen.width / 2 - 320, 70, 650, 50), "Please choose a game mode.");
+                    return "Please choose a game mode.";
                 } else if (totalMoves == 0) {  // 如果总回合数为0，说明还未开始游戏，提示点击棋格并进行游戏
-                    GUI.Label(new Rect(Screen.width / 2 - 320, 70, 650, 50), "Click and play the game.");
+                    return "Click and play the game.";
                 } else if (totalMoves == 9) {  // 如果总回合数为9，说明游戏结束且无玩家胜出，提示没有赢家
-                    GUI.Label(new Rect(Screen.width / 2 - 320, 70, 650, 50), "No Winner!");
+                    return "No Winner!";
                 } else {
                     // 如果是单人模式且游戏正在进行，提醒正在进行单人游戏模式
                     if (totalPlayer == 1) {
-                        GUI.Label(new Rect(Screen.width / 2 - 320, 70, 650, 50), "1 Player Mode Playing...");
+                        return "1 Player Mode Playing...";
                     } else if (totalPlayer == 2) {  // 如果是双人模式且游戏正在进行，提醒正在进行双人游戏模式
-                        GUI.Label(new Rect(Screen.width / 2 - 320, 70, 650, 50), "2 Players Mode Playing...");
+                        return "2 Players Mode Playing...";
                     }
+                    return "";
                 }
-                break;
             // 如果玩家1胜出
             case PLAYER1:
                 // 提示框显示玩家1胜出
-                GUI.Label(new Rect(Screen.width / 2 - 320, 70, 650, 50), "Player1(O) Wins!");
-                break;
+                return "Player1(O) Wins!";
             // 如果玩家2胜出
             case PLAYER2:
                 // 提示框显示玩家2胜出
-                GUI.Label(new Rect(Screen.width / 2 - 320, 70, 650, 50), "Player2(X) Wins!");
-                break;
+                return "Player2(X) Wins!";
+            default:
+                return "";
         }
     }
 
-    /* 按照横坐标和纵坐标设置井字棋格 */
-    void SetGameButton(int xIndex, int yIndex) {
+    /* 根据横坐标和纵坐标获取棋盘相应位置从而获取井字棋格内容 */
+    string GetGameButtonText(int xIndex, int yIndex) {
         // 按照横纵坐标找到棋格相应的位置
         int buttonX = firstButtonX + xIndex * buttonWidth;
         int buttonY = firstButtonY + yIndex * buttonHeight;
@@ -213,31 +222,44 @@ public class TicTacToe : MonoBehaviour {
             // 如果这个棋格中为NOPLAYER
             case NOPLAYER:
                 // 设置按钮中不显示任何内容
-                if (GUI.Button(new Rect(buttonX, buttonY, buttonWidth, buttonHeight), "")) {
-                    // 如果还未选择游戏模式，那么进行提示，且点击按钮无反应
-                    if (totalPlayer == 0) {
-                        // AddTip(NOPLAYER);
-                        return;
-                    }
-                    // 选择游戏模式并点击棋格后，该棋格设置为这个游戏回合对应的玩家，游戏回合转换，总回合数加一
-                    chessBoard[yIndex, xIndex] = gameTurn;
-                    gameTurn = (gameTurn == PLAYER1 ? PLAYER2 : PLAYER1);
-                    totalMoves++;
-                    // 如果是单人游戏模式且游戏还未结束，那么电脑直接来走一步
-                    if (totalPlayer == 1 && totalMoves < 9 && CheckWinner() == NOPLAYER) {
-                        ComputerMove();
-                    }
-                }
-                break;
+                return "";
             // 如果这个棋格中为PLAYER1
             case PLAYER1:
                 // 棋格中显示内容为O
-                GUI.Button(new Rect(buttonX, buttonY, buttonHeight, buttonWidth), "O");
-                break;
+                return "O";
             // 如果这个棋格中为PLAYER2
             case PLAYER2:
+                return "X";
+            default:
                 // 棋格中显示内容为X
-                GUI.Button(new Rect(buttonX, buttonY, buttonHeight, buttonWidth), "X");
+                return "";
+        }
+    }
+
+    /* 根据横坐标和纵坐标获取棋盘相应位置从而设置相应棋格功能 */
+    void SetGameButtonFunction(int xIndex, int yIndex) {
+        int Player = chessBoard[yIndex, xIndex];
+        switch (Player) {
+            // 如果这个棋格中为NOPLAYER
+            case NOPLAYER:
+                // 如果还未选择游戏模式，那么进行提示，且点击按钮无反应
+                if (totalPlayer == 0) {
+                    return;
+                }
+                // 选择游戏模式并点击棋格后，该棋格设置为这个游戏回合对应的玩家，游戏回合转换，总回合数加一
+                chessBoard[yIndex, xIndex] = gameTurn;
+                gameTurn = (gameTurn == PLAYER1 ? PLAYER2 : PLAYER1);
+                totalMoves++;
+                // 如果是单人游戏模式且游戏还未结束，那么电脑直接来走一步
+                if (totalPlayer == 1 && totalMoves < 9 && CheckWinner() == NOPLAYER) {
+                    ComputerMove();
+                }
+                break;
+            // 如果这个棋格中为PLAYER1，无反应
+            case PLAYER1:
+                break;
+            // 如果这个棋格中为PLAYER2，无反应
+            case PLAYER2:
                 break;
         }
     }
