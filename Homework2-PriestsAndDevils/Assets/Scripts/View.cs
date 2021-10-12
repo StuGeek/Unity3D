@@ -113,7 +113,7 @@ namespace PriestsAndDevils {
             tipContent = "Click and Play the Game";
         }
 
-        void ShowResetButton() {
+        public void ShowResetButton() {
             GUIStyle resetStyle = new GUIStyle("button");
 			resetStyle.fontSize = 20;
 
@@ -123,7 +123,7 @@ namespace PriestsAndDevils {
 			}
         }
 
-        void ShowTip(string tipContent) {
+        public void ShowTip(string tipContent) {
             GUIStyle tipStyle = new GUIStyle();
 
             tipStyle.fontSize = 20;

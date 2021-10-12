@@ -13,11 +13,6 @@ namespace PriestsAndDevils {
 		Not_Moving = 0, Moving_To_Middle = 1, Moving_To_End = 2
 	};
 
-	/* 角色类型，0为牧师，1为魔鬼 */
-	enum RoleType {
-		NoRole = -1, Priest = 0, Devil = 1
-	};
-
 	/* 游戏状态，0为正在进行，1为游戏失败，2为游戏成功 */
 	enum GameState {
 		Playing = 0, Lose = 1, Win = 2
@@ -95,7 +90,7 @@ namespace PriestsAndDevils {
 
 	/* 点击控制器，一般会挂载在某个游戏对象上 */
 	public class ClickController : MonoBehaviour {
-		RoleController clickRole; // 如果点击的是角色，那么记录点击的对象的控制器
+		private RoleController clickRole; // 如果点击的是角色，那么记录点击的对象的控制器
 
 		public void SetClickRole(RoleController role) {
 			clickRole = role;
@@ -315,7 +310,7 @@ namespace PriestsAndDevils {
 		}
 
 		/* 将角色离开岸上 */
-		public void PutRoleOffShore(string roleName) {	// 0->priest, 1->devil
+		public void PutRoleOffShore(string roleName) {
 			string [] roleOnShore = shoreModel.GetRoleOnShore();
 			// 如果岸的相应位置有角色名字，将其置为空
 			for (int i = 0; i < roleOnShore.Length; i++) {
@@ -351,10 +346,10 @@ namespace PriestsAndDevils {
 		private MoveController moveController; // 移动控制器
 		private ClickController clickController; // 点击控制器
 
-		ShoreController shoreController; // 角色所在相应岸上的岸控制器
+		private ShoreController shoreController; // 角色所在相应岸上的岸控制器
 
-		public RoleController(int roleType, string roleName, int number) {
-			roleModel = new RoleModel(roleType);
+		public RoleController(string roleName, int number) {
+			roleModel = new RoleModel();
 			roleView = new RoleView(roleName, number);
 			
 			// 添加移动控制器
@@ -388,11 +383,6 @@ namespace PriestsAndDevils {
 		/* 将角色移动到指定位置 */
 		public void MoveToPosition(Vector3 endPosination) {
 			moveController.SetMovePos(endPosination);
-		}
-
-		/* 获取角色类型 */
-		public int GetRoleModelType() {
-			return roleModel.GetRoleType();
 		}
 
 		/* 获取角色游戏对象名字 */
@@ -432,7 +422,7 @@ namespace PriestsAndDevils {
 		private BoatController boat; // 船控制器
 		private ShoreController leftShore; // 左岸控制器
 		private ShoreController rightShore; // 右岸控制器
-		private RoleController [] roles; // 所以角色的控制器
+		private RoleController [] roles; // 所有角色的控制器
 		private RiverView riverView; // 河流视图
 		private FunctionView functionView; // 功能视图，包括提示框，游戏信息等
 
@@ -460,14 +450,14 @@ namespace PriestsAndDevils {
 		/* 为每个角色创建控制器并初始化视图 */
 		private void CreateRolesController() {
 			for (int i = 0; i < 3; i++) {
-				roles[i] = new RoleController(0, "Priest", i + 1);
+				roles[i] = new RoleController("Priest", i + 1);
 				roles[i].SetRolePos(rightShore.GetFreePosition());
 				roles[i].PutRoleOnShore(rightShore);
 				rightShore.PutRoleOnShore(roles[i].GetRoleViewName());
 			}
 
 			for (int i = 0; i < 3; i++) {
-				roles[i + 3] = new RoleController(1, "Devil", i + 1);
+				roles[i + 3] = new RoleController("Devil", i + 1);
 				roles[i + 3].SetRolePos(rightShore.GetFreePosition());
 				roles[i + 3].PutRoleOnShore(rightShore);
 				rightShore.PutRoleOnShore(roles[i + 3].GetRoleViewName());

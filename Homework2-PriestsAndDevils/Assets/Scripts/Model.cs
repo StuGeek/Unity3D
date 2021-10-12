@@ -57,20 +57,7 @@ namespace PriestsAndDevils {
 
     /* 角色模型 */
     public class RoleModel {
-		private int roleType;  // 角色类型，0表示牧师，1表示魔鬼
         private bool isOnBoat;  // 角色是否在船上
-
-        public RoleModel(int type) {
-            roleType = type;
-        }
-
-        public void SetRoleType(int type) {
-            roleType = type;
-        }
-
-        public int GetRoleType() {
-            return roleType;
-        }
 
         public void SetIsOnBoat(bool isOnBoat) {
             this.isOnBoat = isOnBoat;
