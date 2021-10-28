@@ -96,4 +96,9 @@ public class MainController : MonoBehaviour {
             }
         }
     }
+
+    // 释放所有工厂飞碟
+    public void FreeAllFactoryDisk() {
+        roundController.FreeAllFactoryDisk();
+    }
 }

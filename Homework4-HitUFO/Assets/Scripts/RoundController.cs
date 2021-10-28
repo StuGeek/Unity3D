@@ -130,6 +130,16 @@ public class RoundController : MonoBehaviour {
         Singleton<DiskFactory>.Instance.FreeDisk(disk);
     }
 
+    // 释放所有工厂飞碟
+    public void FreeAllFactoryDisk() {
+        GameObject[] obj = FindObjectsOfType(typeof(GameObject)) as GameObject[];
+        foreach (GameObject g in obj) {
+            if (g.gameObject.name == "Disk(Clone)(Clone)") {
+                Singleton<DiskFactory>.Instance.FreeDisk(g);
+            }
+        }
+    }
+
     void Update() {
         if (mainController.GetGameState() == (int)GameState.Playing) {
             ruler.sendTime += Time.deltaTime;

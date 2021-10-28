@@ -65,6 +65,7 @@ public class DiskFactory : MonoBehaviour {
         foreach (DiskData d in used) {
             if (d.gameObject.GetInstanceID() == disk.GetInstanceID()) {
                 disk.SetActive(false);
+                Debug.Log(d.gameObject.name);
                 used.Remove(d);
                 free.Add(d);
                 break;

@@ -72,9 +72,11 @@ public class View : MonoBehaviour {
     public void AddActionModeButton() {
         GUI.skin = gameSkin;
         if (GUI.Button(new Rect(10, Screen.height - 100, 110, 40), "运动学模式")) {
+            mainController.FreeAllFactoryDisk();
             mainController.SetPlayDiskModeToPhysis(false);
         }
         if (GUI.Button(new Rect(10, Screen.height - 50, 110, 40), "物理模式")) {
+            mainController.FreeAllFactoryDisk();
             mainController.SetPlayDiskModeToPhysis(true);
         }
     }
@@ -82,6 +84,7 @@ public class View : MonoBehaviour {
     public void AddBackButton() {
         GUI.skin = gameSkin;
         if (GUI.Button(new Rect(10, 10, 60, 40), "Back")) {
+            mainController.FreeAllFactoryDisk();
             mainController.Restart();
             mainController.SetGameState((int)GameState.Ready);
         }
@@ -100,6 +103,7 @@ public class View : MonoBehaviour {
 
     public void AddRestartButton() {
         if (GUI.Button(new Rect(300, 150, 100, 60), "Restart")) {
+            mainController.FreeAllFactoryDisk();
             mainController.Restart();
             mainController.SetGameState((int)GameState.Playing);
         }
