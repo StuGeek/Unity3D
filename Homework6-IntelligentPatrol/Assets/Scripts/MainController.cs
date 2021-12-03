@@ -114,7 +114,7 @@ public class MainController : MonoBehaviour {
     }
 
     public void Restart() {
-        SceneManager.LoadScene("Scenes/SampleSence");
+        SceneManager.LoadScene("Scenes/SampleScene");
     }
 
     void OnEnable() {
