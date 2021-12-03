@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameObjectFactory : MonoBehaviour {
     private List<GameObject> usedPatrol = new List<GameObject>();  // 正在被使用的巡逻兵对象
-    private List<GameObject> usedTreasure = new List<GameObject>();  // 正在被使用的水晶对象
+    private List<GameObject> usedTreasure = new List<GameObject>();  // 正在被使用的宝箱对象
 
     // 巡逻兵获取方法
     public List<GameObject> GetPatrols() {
@@ -35,9 +35,9 @@ public class GameObjectFactory : MonoBehaviour {
         }
     }
 
-    // 水晶获取方法
+    // 宝箱获取方法
     public List<GameObject> GetTreasures() {
-        // 水晶游戏对象
+        // 宝箱游戏对象
         GameObject treasurePrefab = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Treasure"), Vector3.zero, Quaternion.identity);
         treasurePrefab.SetActive(false);
         for (int i = 0; i < Director.GetInstance().mainController.GetTreasureNumber(); ++i) {
